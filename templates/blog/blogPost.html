@@ -5,18 +5,29 @@
 
 {% block body %}
 <div class="container my-3">
-<h2 class="blog-post-title">{{ post.title }}</h2>
-<p class="blog-post-meta">{{ post.timeStamp }} by <a href="/about">{{ post.author }}</a></p>
-<p>{{ post.content }}</p>
-<hr>
+    <h2 class="blog-post-title">{{ post.title }}</h2>
+    <p class="blog-post-meta">{{ post.timeStamp }} by <a href="/about">{{ post.author }}</a></p>
+    <p>{{ post.content }}</p>
+    <hr>
 </div>
 <div class="container">
-<h2>Comments</h2>
-<form action="/blog/postComment" method="post">
-{% csrf_token %}
-<input type="text" name="blogComment" placeholder="Enter comment here">
-<input type="hidden" name="postSno" value="{{ post.sno }}">
-<input type="submit" value="Submit">
-</form>
+    <h2>Comments</h2>
+    <form action="/blog/postComment" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="commentPost">Post Comment</label>
+            <input type="text" class="form-control" name="blogComment" placeholder="Enter comment here">
+        </div>
+        <input type="hidden" name="postSno" value="{{ post.sno }}">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    {% for comment in comments %}
+    <div class="row my-3">
+    <div class="col-md-1"><img class="rounded mx-auto d-block w-100 p-2" src="/static/img/user.png" alt="user image"></div>
+    <div class="col-md-11"> <b>{{ comment.user.username }}</b> at {{ comment.timeStamp }}
+    <div>{{ comment.blogComment }}</div>
+    </div>
+    </div>
+    {% endfor %}
 </div>
 {% endblock body %}
