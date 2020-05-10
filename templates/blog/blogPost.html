@@ -4,6 +4,7 @@
 {% block blogactive %} active {% endblock blogactive %}
 
 {% block body %}
+{% load humanize %}
 <div class="container my-3">
     <h2 class="blog-post-title">{{ post.title }}</h2>
     <p class="blog-post-meta">{{ post.timeStamp }} by <a href="/about">{{ post.author }}</a></p>
@@ -11,7 +12,9 @@
     <hr>
 </div>
 <div class="container">
-    <h2>Comments</h2>
+    <h2>Comments ({{ comments.count }})</h2>
+    <div class="my-2">
+    {% if user.is_authenticated %}
     <form action="/blog/postComment" method="post">
         {% csrf_token %}
         <div class="form-group">
@@ -21,10 +24,14 @@
         <input type="hidden" name="postSno" value="{{ post.sno }}">
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
+    {% else %}
+    <p>You must be logged in to post a comment</p>
+    {% endif %}
+    </div>
     {% for comment in comments %}
     <div class="row my-3">
     <div class="col-md-1"><img class="rounded mx-auto d-block w-100 p-2" src="/static/img/user.png" alt="user image"></div>
-    <div class="col-md-11"> <b>{{ comment.user.username }}</b> at {{ comment.timeStamp }}
+    <div class="col-md-11"> <b>{{ comment.user.username }}</b> <span class="badge badge-secondary">{{ comment.timeStamp | naturaltime }}</span>
     <div>{{ comment.blogComment }}</div>
     </div>
     </div>
