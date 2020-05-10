@@ -13,7 +13,7 @@ def blogPost(request, slug):
     post = Post.objects.filter(slug = slug).first()
     # Get the comments on the post
     comments = Comment.objects.filter(post=post)
-    context = {'post': post, 'comments': comments}
+    context = {'post': post, 'comments': comments, 'user': request.user}
     return render(request, 'blog/blogPost.html', context)
 
 def postComment(request):
