@@ -14,26 +14,51 @@
 <div class="container">
     <h2>Comments ({{ comments.count }})</h2>
     <div class="my-2">
-    {% if user.is_authenticated %}
-    <form action="/blog/postComment" method="post">
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="commentPost">Post Comment</label>
-            <input type="text" class="form-control" name="blogComment" placeholder="Enter comment here">
-        </div>
-        <input type="hidden" name="postSno" value="{{ post.sno }}">
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-    {% else %}
-    <p>You must be logged in to post a comment</p>
-    {% endif %}
+        {% if user.is_authenticated %}
+        <form action="/blog/postComment" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="commentPost">Post Comment</label>
+                <input type="text" class="form-control" name="blogComment" placeholder="Enter comment here">
+            </div>
+            <input type="hidden" name="postSno" value="{{ post.sno }}">
+            <input type="hidden" name="parentSno" value="">
+            <button type="submit" class="btn btn-success">Submit</button>
+        </form>
+        {% else %}
+        <p>You must be logged in to post a comment</p>
+        {% endif %}
     </div>
     {% for comment in comments %}
     <div class="row my-3">
-    <div class="col-md-1"><img class="rounded mx-auto d-block w-100 p-2" src="/static/img/user.png" alt="user image"></div>
-    <div class="col-md-11"> <b>{{ comment.user.username }}</b> <span class="badge badge-secondary">{{ comment.timeStamp | naturaltime }}</span>
-    <div>{{ comment.blogComment }}</div>
-    </div>
+        <div class="col-md-1"><img class="rounded mx-auto d-block w-100 p-2" src="/static/img/user.png"
+                alt="user image"></div>
+        <div class="col-md-11"> <b>{{ comment.user.username }}</b> <span
+                class="badge badge-secondary">{{ comment.timeStamp | naturaltime }}</span>
+            <div>{{ comment.blogComment }}</div>
+            <!-- Reply box id So that Reply box should only open for the comment to which the button is pressed and not for all -->
+            <div class="reply mx-0">
+                <button class="btn btn-sm btn-success" type="button" data-toggle="collapse"
+                    data-target="#replyBox{{comment.sno}}" aria-expanded="false" aria-controls="collapseExample">
+                    Reply
+                </button>
+                <div class="collapse" id="replyBox{{comment.sno}}">
+                    <div class="card card-body my-2">
+                        <form action="/blog/postComment" method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="commentReply">Post a Reply</label>
+                                <input type="text" class="form-control" name="blogComment"
+                                    placeholder="Enter reply here">
+                                <input type="hidden" name="parentSno" value="{{comment.sno}}">
+                            </div>
+                            <input type="hidden" name="postSno" value="{{ post.sno }}">
+                            <button type="submit" class="btn btn-success">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     {% endfor %}
 </div>
