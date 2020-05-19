@@ -18,7 +18,7 @@ def blogPost(request, slug):
     repDict = {}
     # If the comment gets first reply, it's sno. won't be there in dictionary and then it will be added to the dictionary and if it's the reply after 1 already there, it will simply be added with the existing ones in the same comment no.
     for reply in replies:
-        if reply.sno not in repDict.keys():
+        if reply.parent.sno not in repDict.keys():
             repDict[reply.parent.sno] = [reply]
         else:
             repDict[reply.parent.sno].append(reply)

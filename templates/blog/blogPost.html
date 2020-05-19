@@ -39,6 +39,7 @@
             <div>{{ comment.blogComment }}</div>
             <!-- Reply box id So that Reply box should only open for the comment to which the button is pressed and not for all -->
             <div class="reply mx-0">
+                {% if user.is_authenticated %}
                 <button class="btn btn-sm btn-success" type="button" data-toggle="collapse"
                     data-target="#replyBox{{comment.sno}}" aria-expanded="false" aria-controls="collapseExample">
                     Reply
@@ -58,10 +59,26 @@
                         </form>
                     </div>
                 </div>
-                <div class="replies bg-danger my-2">
+                {% else %}
+                <button class="btn btn-sm btn-success" type="button" data-toggle="collapse"
+                    data-target="#replyBox{{comment.sno}}" aria-expanded="false" aria-controls="collapseExample"
+                    disabled>
+                    Login to Reply
+                </button>
+                {% endif %}
+                <div class="replies my-2">
                     <!-- Used our own template filter get_val to get values from repDict and the filter has been registered in templatetags directory - extras -->
                     {% for reply in repDict|get_val:comment.sno %}
-                    {{ reply }}
+                    <div class="row my-2">
+                        <div class="col-md-1">
+                            <img class="rounded mx-auto d-block w-100 p-2" src="/static/img/user.png" alt="user image">
+                        </div>
+                        <div class="col-md-11">
+                            <b>{{ reply.user.username }}</b> <span
+                                class="badge badge-secondary">{{ reply.timeStamp | naturaltime }}</span>
+                            <div>{{ reply.blogComment }}</div>
+                        </div>
+                    </div>
                     {% endfor %}
                 </div>
             </div>
