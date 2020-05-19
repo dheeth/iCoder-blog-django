@@ -1,6 +1,7 @@
 from django.shortcuts import render, HttpResponse,redirect
 from django.contrib import messages
 from blog.models import Post, Comment
+from blog.templatetags import extras
 
 # Create your views here.
 
@@ -12,8 +13,16 @@ def blogHome(request):
 def blogPost(request, slug):
     post = Post.objects.filter(slug = slug).first()
     # Get the comments on the post
-    comments = Comment.objects.filter(post=post)
-    context = {'post': post, 'comments': comments, 'user': request.user}
+    comments = Comment.objects.filter(post=post, parent=None) # To count only comments
+    replies = Comment.objects.filter(post=post).exclude(parent=None) # To get the replies & used exclude because we want the comments which have some parent to be considered as replies and parent != none gives error
+    repDict = {}
+    # If the comment gets first reply, it's sno. won't be there in dictionary and then it will be added to the dictionary and if it's the reply after 1 already there, it will simply be added with the existing ones in the same comment no.
+    for reply in replies:
+        if reply.sno not in repDict.keys():
+            repDict[reply.parent.sno] = [reply]
+        else:
+            repDict[reply.parent.sno].append(reply)
+    context = {'post': post, 'comments': comments, 'user': request.user, 'repDict': repDict}
     return render(request, 'blog/blogPost.html', context)
 
 def postComment(request):
