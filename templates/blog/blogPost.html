@@ -5,6 +5,7 @@
 
 {% block body %}
 {% load humanize %}
+{% load extras %}
 <div class="container my-3">
     <h2 class="blog-post-title">{{ post.title }}</h2>
     <p class="blog-post-meta">{{ post.timeStamp }} by <a href="/about">{{ post.author }}</a></p>
@@ -56,6 +57,12 @@
                             <button type="submit" class="btn btn-success">Submit</button>
                         </form>
                     </div>
+                </div>
+                <div class="replies bg-danger my-2">
+                    <!-- Used our own template filter get_val to get values from repDict and the filter has been registered in templatetags directory - extras -->
+                    {% for reply in repDict|get_val:comment.sno %}
+                    {{ reply }}
+                    {% endfor %}
                 </div>
             </div>
         </div>
