@@ -12,6 +12,8 @@ def blogHome(request):
 
 def blogPost(request, slug):
     post = Post.objects.filter(slug = slug).first()
+    post.views = post.views + 1
+    post.save()
     # Get the comments on the post
     comments = Comment.objects.filter(post=post, parent=None) # To count only comments
     replies = Comment.objects.filter(post=post).exclude(parent=None) # To get the replies & used exclude because we want the comments which have some parent to be considered as replies and parent != none gives error
